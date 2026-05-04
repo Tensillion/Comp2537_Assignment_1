@@ -85,6 +85,10 @@ app.get("/", (req, res) => {
 
 //Members Page
 app.get("/member", (req, res) => {
+	if (!req.session.authenticated) {
+		res.redirect("/signin");
+	}
+
 	let id = req.query.id;
 	const maxImages = 4;
 
