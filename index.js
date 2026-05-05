@@ -192,18 +192,11 @@ app.post("/submitSignup", async (req, res) => {
 
 	await userCollection.insertOne({ email: email, password: hashedPassword });
 
-	let html = `
-  <p>You are now signed in! Email: ${email}</p>
-  <a href='/'>Back to main page</a>
-  `;
-
 	//Create the session for the new user
 	req.session.authenticated = true;
 	req.session.email = email;
 	req.session.cookie.maxAge = expireTime;
 	res.redirect("/member");
-
-	res.status(200).send(html);
 });
 
 app.post("/loggingin", async (req, res) => {
