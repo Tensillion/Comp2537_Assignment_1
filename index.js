@@ -197,6 +197,12 @@ app.post("/submitSignup", async (req, res) => {
   <a href='/'>Back to main page</a>
   `;
 
+	//Create the session for the new user
+	req.session.authenticated = true;
+	req.session.email = email;
+	req.session.cookie.maxAge = expireTime;
+	res.redirect("/member");
+
 	res.status(200).send(html);
 });
 
