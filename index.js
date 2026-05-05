@@ -138,7 +138,7 @@ app.get("/signin", (req, res) => {
 	if (req.session.authenticated) {
 		res.redirect("/loggedin");
 	}
-	let accountPasswordWrong = `Wrong Password`;
+	let accountPasswordWrong = `Invalid Email or password.`;
 
 	let errorMsg = req.query.err;
 
@@ -223,7 +223,7 @@ app.post("/loggingin", async (req, res) => {
 
 	if (result.length != 1) {
 		console.log("User Not Found");
-		res.redirect("/signin");
+		res.redirect("/signin?err=3");
 
 		return;
 	}
