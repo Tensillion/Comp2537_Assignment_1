@@ -98,10 +98,11 @@ app.get("/member", (req, res) => {
 		id = req.query.id;
 	}
 
-	res.send(
-		`<p>Image #${id}</p>
-    <img src='/img/${id}.png' style='width:250px;'/>`,
-	);
+	res.send(`
+	<p>Image #${id}</p>
+    <img src='/img/${id}.png' style='width:250px;'/>
+	<a href="/logout">Log out</a>
+	`);
 });
 
 //Authentications
@@ -201,7 +202,7 @@ app.post("/submitSignup", async (req, res) => {
 
 app.post("/loggingin", async (req, res) => {
 	if (req.session.authenticated) {
-		res.redirect("/");
+		res.redirect("/member");
 	}
 
 	let email = req.body.email;
@@ -232,7 +233,7 @@ app.post("/loggingin", async (req, res) => {
 		req.session.authenticated = true;
 		req.session.email = email;
 		req.session.cookie.maxAge = expireTime;
-		res.redirect("/loggedIn");
+		res.redirect("/member");
 
 		return;
 	} else {
@@ -241,18 +242,6 @@ app.post("/loggingin", async (req, res) => {
 
 		return;
 	}
-});
-
-app.get("/loggedin", (req, res) => {
-	if (!req.session.authenticated) {
-		res.redirect("/signin");
-	}
-
-	let html = `
-  <p>You are logged in</p>
-  <a href='/'>Back to main page</a>`;
-
-	res.send(html);
 });
 
 app.get("/logout", (req, res) => {
