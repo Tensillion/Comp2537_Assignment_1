@@ -1,12 +1,12 @@
 //require("dotenv").config();
 
-const fs = require("fs");
-const express = require("express");
-const session = require("express-session");
-const { MongoStore } = require("connect-mongo");
-const bcrypt = require("bcrypt");
+const fs = require('fs');
+const express = require('express');
+const session = require('express-session');
+const { MongoStore } = require('connect-mongo');
+const bcrypt = require('bcrypt');
 
-const Joi = require("joi");
+const Joi = require('joi');
 
 const app = express();
 
@@ -25,11 +25,11 @@ const mongodb_session_database = process.env.MONGO_DATABASE;
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 //END OF SECRETS
 
-const MongoClient = require("mongodb").MongoClient;
+const MongoClient = require('mongodb').MongoClient;
 const atlasURL = `mongodb+srv://${mongodb_user}:${mongodb_password}@${mongodb_host}/`;
 const database = new MongoClient(atlasURL, {});
 
-const userCollection = database.db(mongodb_user_database).collection("users");
+const userCollection = database.db(mongodb_user_database).collection('users');
 
 //This allows us to use req.body
 app.use(express.urlencoded({ extended: false }));
@@ -50,14 +50,14 @@ app.use(
 		store: mongoStore,
 		saveUninitialized: false,
 		resave: true,
-	}),
+	})
 );
 
 //Image Route
-app.use("/img", express.static("./public/imgs"));
+app.use('/img', express.static('./public/imgs'));
 
 //Landing Page
-app.get("/", (req, res) => {
+app.get('/', (req, res) => {
 	let html;
 
 	if (req.session.authenticated) {
@@ -84,9 +84,9 @@ app.get("/", (req, res) => {
 });
 
 //Members Page
-app.get("/member", (req, res) => {
+app.get('/member', (req, res) => {
 	if (!req.session.authenticated) {
-		res.redirect("/signin");
+		res.redirect('/signin');
 	}
 
 	let id = req.query.id;
@@ -106,9 +106,9 @@ app.get("/member", (req, res) => {
 });
 
 //Authentications
-app.get("/signup", (req, res) => {
+app.get('/signup', (req, res) => {
 	if (req.session.authenticated) {
-		res.redirect("/loggedin");
+		res.redirect('/loggedin');
 	}
 
 	let invalidCredsHTML = `Invalid Email or password.`;
@@ -122,7 +122,7 @@ app.get("/signup", (req, res) => {
   <p>${
 		errorMsg == 1 ? invalidCredsHTML
 		: errorMsg == 2 ? accountExistHTML
-		: ""
+		: ''
 	}</p>
     <input name='email' type='email' placeholder='Email' required/>
     <input name='password' type='password' placeholder='Password' required/>
@@ -134,9 +134,9 @@ app.get("/signup", (req, res) => {
 	res.status(200).send(html);
 });
 
-app.get("/signin", (req, res) => {
+app.get('/signin', (req, res) => {
 	if (req.session.authenticated) {
-		res.redirect("/loggedin");
+		res.redirect('/loggedin');
 	}
 	let accountPasswordWrong = `Invalid Email or password.`;
 
@@ -145,7 +145,7 @@ app.get("/signin", (req, res) => {
 	let html = `
   <h1>Sign-in</h1>
   <form action='/loggingin' method='post'>
-  <p>${errorMsg == 3 ? accountPasswordWrong : ""}</p>
+  <p>${errorMsg == 3 ? accountPasswordWrong : ''}</p>
     <input name='email' type='email' placeholder='Email' required/>
     <input name='password' type='password' placeholder='Password' required/>
     <button>Submit</button>
@@ -156,9 +156,9 @@ app.get("/signin", (req, res) => {
 	res.status(200).send(html);
 });
 
-app.post("/submitSignup", async (req, res) => {
+app.post('/submitSignup', async (req, res) => {
 	if (req.session.authenticated) {
-		res.redirect("/");
+		res.redirect('/');
 	}
 
 	let email = req.body.email;
@@ -170,8 +170,8 @@ app.post("/submitSignup", async (req, res) => {
 		.toArray();
 
 	if (result.length >= 1) {
-		console.log("Email Already has an account");
-		res.redirect("/signup?err=2");
+		console.log('Email Already has an account');
+		res.redirect('/signup?err=2');
 
 		return;
 	}
@@ -182,8 +182,8 @@ app.post("/submitSignup", async (req, res) => {
 	});
 
 	if (schema.validate({ email, password }).error != null) {
-		console.log("Invalid User credintials!");
-		res.redirect("signup?err=1");
+		console.log('Invalid User credintials!');
+		res.redirect('signup?err=1');
 		return;
 	}
 
@@ -196,12 +196,12 @@ app.post("/submitSignup", async (req, res) => {
 	req.session.authenticated = true;
 	req.session.email = email;
 	req.session.cookie.maxAge = expireTime;
-	res.redirect("/member");
+	res.redirect('/member');
 });
 
-app.post("/loggingin", async (req, res) => {
+app.post('/loggingin', async (req, res) => {
 	if (req.session.authenticated) {
-		res.redirect("/member");
+		res.redirect('/member');
 	}
 
 	let email = req.body.email;
@@ -209,8 +209,8 @@ app.post("/loggingin", async (req, res) => {
 
 	const schema = Joi.string().email().required();
 	if (schema.validate(email).error != null) {
-		console.log("Invalid Email");
-		res.redirect("/signin");
+		console.log('Invalid Email');
+		res.redirect('/signin');
 
 		return;
 	}
@@ -221,29 +221,29 @@ app.post("/loggingin", async (req, res) => {
 		.toArray();
 
 	if (result.length != 1) {
-		console.log("User Not Found");
-		res.redirect("/signin?err=3");
+		console.log('User Not Found');
+		res.redirect('/signin?err=3');
 
 		return;
 	}
 
 	if (await bcrypt.compare(password, result[0].password)) {
-		console.log("Correct password");
+		console.log('Correct password');
 		req.session.authenticated = true;
 		req.session.email = email;
 		req.session.cookie.maxAge = expireTime;
-		res.redirect("/member");
+		res.redirect('/member');
 
 		return;
 	} else {
-		console.log("Incorrect Password");
-		res.redirect("/signin?err=3");
+		console.log('Incorrect Password');
+		res.redirect('/signin?err=3');
 
 		return;
 	}
 });
 
-app.get("/logout", (req, res) => {
+app.get('/logout', (req, res) => {
 	req.session.destroy();
 
 	let html = `
@@ -255,7 +255,7 @@ app.get("/logout", (req, res) => {
 });
 
 app.use((req, res) => {
-	res.status(404).send("404 - Page not found");
+	res.status(404).send('404 - Page not found');
 });
 //End of Authentication
 
