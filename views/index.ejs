@@ -1,0 +1,23 @@
+<%- include("templates/header") %>
+<div class="col-12 col-lg-8">
+	<div class="card shadow-sm border-0">
+		<div class="card-body p-4 p-md-5 text-center">
+			<% if (locals.authenticated) { %>
+				<h1 class="display-6 fw-semibold mb-3">Welcome, <%= locals.name %>!</h1>
+				<p class="text-body-secondary mb-4">Use the dashboard below to continue.</p>
+				<div class="d-flex flex-column flex-sm-row justify-content-center gap-2">
+					<a class="btn btn-primary btn-lg" href="/member">Member Dashboard</a>
+					<a class="btn btn-outline-secondary btn-lg" href="/logout">Log out</a>
+				</div>
+			<% } else { %>
+				<h1 class="display-6 fw-semibold mb-3">Welcome to Tyson's Cool Website</h1>
+				<p class="text-body-secondary mb-4">Sign in or create an account to access the member area.</p>
+				<div class="d-flex flex-column flex-sm-row justify-content-center gap-2">
+					<a class="btn btn-primary btn-lg" href="/authenticate?type=signup">Sign-up</a>
+					<a class="btn btn-outline-primary btn-lg" href="/authenticate?type=login">Sign-in</a>
+				</div>
+			<% } %>
+		</div>
+	</div>
+</div>
+<%- include("templates/footer") %>

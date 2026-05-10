@@ -1,0 +1,18 @@
+<%- include("templates/header") %>
+<div class="col-12 col-xl-10">
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4 p-md-5">
+            <h1 class="h3 fw-semibold mb-3">Member Dashboard</h1>
+            <p class="text-body-secondary mb-4">Seele Fan Art!</p>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 mb-4">
+                <% for (let i = 0; i < max; i++) { %>
+                    <%- include("templates/image", { i : i }) %>
+                <% } %>
+            </div>
+            <div class="text-center">
+                <a class="btn btn-outline-primary" href="/">Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include("templates/footer") %>

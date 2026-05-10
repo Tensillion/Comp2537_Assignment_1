@@ -1,0 +1,15 @@
+<div class="card border-0 shadow-sm">
+    <div class="card-body d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+        <h2 class="h5 card-title mb-1"><%= user.name %> (<%= user.user_type %>)</h2>
+        <form action="/admin/update-user-type" method="post" class="m-0">
+            <input type="hidden" name="userId" value="<%= user._id %>" />
+            <% if (user.user_type === "admin") { %>
+                <input type="hidden" name="userType" value="user" />
+                <button type="submit" class="btn btn-success">Demote to User</button>
+            <% } else { %>
+                <input type="hidden" name="userType" value="admin" />
+                <button type="submit" class="btn btn-danger">Promote to Admin</button>
+            <% } %>
+        </form>
+    </div>
+</div>
